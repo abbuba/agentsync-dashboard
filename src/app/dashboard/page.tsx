@@ -5,7 +5,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import CategoryManager from '@/components/CategoryManager'; // Import the new component
+import CategoryManager from '@/components/CategoryManager';
+import SuggestionManager from '@/components/SuggestionManager'; // 1. Import the new component
 
 type UserSession = {
   status: string;
@@ -33,7 +34,7 @@ export default function DashboardPage() {
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">Loading...</div>;
   }
 
   return (
@@ -54,8 +55,9 @@ export default function DashboardPage() {
       </header>
 
       <main className="container mx-auto p-8">
-        {/* Replace placeholder with our new component */}
+        <h2 className="mb-6 text-3xl">Workspace Customization</h2>
         <CategoryManager organizationId={user.organization_id} />
+        <SuggestionManager organizationId={user.organization_id} /> {/* 2. Add the component here */}
       </main>
     </div>
   );
