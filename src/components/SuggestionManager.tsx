@@ -5,11 +5,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Define the shape of our Suggestion data
+// Define a specific type for the suggestion style
+type SuggestionStyle = 'Sentence Starter' | 'Complete Phrase';
+
 interface Suggestion {
   id: number;
   text: string;
-  style: 'Sentence Starter' | 'Complete Phrase';
+  style: SuggestionStyle;
 }
 
 interface SuggestionManagerProps {
@@ -19,7 +21,7 @@ interface SuggestionManagerProps {
 export default function SuggestionManager({ organizationId }: SuggestionManagerProps) {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [newSuggestionText, setNewSuggestionText] = useState('');
-  const [newSuggestionStyle, setNewSuggestionStyle] = useState<'Sentence Starter' | 'Complete Phrase'>('Sentence Starter');
+  const [newSuggestionStyle, setNewSuggestionStyle] = useState<SuggestionStyle>('Sentence Starter');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -84,7 +86,8 @@ export default function SuggestionManager({ organizationId }: SuggestionManagerP
         />
         <select
           value={newSuggestionStyle}
-          onChange={(e) => setNewSuggestionStyle(e.target.value as any)}
+          // THE FIX IS HERE: We now specify the correct type
+          onChange={(e) => setNewSuggestionStyle(e.target.value as SuggestionStyle)}
           className="rounded-md bg-gray-700 p-3 text-white focus:border-blue-500 focus:ring-blue-500"
         >
           <option>Sentence Starter</option>
