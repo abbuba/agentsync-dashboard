@@ -50,12 +50,15 @@ export default function TeamManager({ organizationId }: TeamManagerProps) {
     try {
       const response = await axios.post(`${apiUrl}/organizations/${organizationId}/users`, {
         email: newUserEmail,
-        password: 'password123', // A temporary password
+        password: 'password123', // This is handled by the backend
         role: newUserRole,
       });
       setUsers([...users, response.data]);
       setNewUserEmail('');
-      alert(`Invitation sent to ${newUserEmail}! Their temporary password is 'password123'.`);
+      
+      // THE FIX IS HERE: Updated alert message
+      alert(`An email invitation has been sent to ${newUserEmail}.`);
+      
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
         setError(err.response.data.detail || 'Failed to invite user.');
@@ -84,7 +87,6 @@ export default function TeamManager({ organizationId }: TeamManagerProps) {
           />
           <select
             value={newUserRole}
-            // THE FIX IS HERE: We now specify the correct type
             onChange={(e) => setNewUserRole(e.target.value as NewUserRole)}
             className="rounded-md bg-gray-700 p-3 text-white focus:border-blue-500 focus:ring-blue-500"
           >
