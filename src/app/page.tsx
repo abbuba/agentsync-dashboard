@@ -3,7 +3,7 @@
 "use client";
 
 import { useState } from 'react';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 
 export default function Home() {
   const [organizationName, setOrganizationName] = useState('');
@@ -12,7 +12,6 @@ export default function Home() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // V4.1: Updated handleLogin function with API call
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -20,40 +19,38 @@ export default function Home() {
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (!apiUrl) {
-      setError("API URL is not configured. Please check environment variables.");
+      setError("API URL is not configured.");
       setLoading(false);
       return;
     }
     
+    // THE FIX IS IN THIS 'catch' BLOCK
     try {
-      // Make a POST request to our login endpoint
       const response = await axios.post(`${apiUrl}/users/login`, {
         organization_name: organizationName,
         email: email,
         password: password,
       });
 
-      // Handle a successful login
-            console.log("Connecting to API at:", process.env.NEXT_PUBLIC_API_URL);
       console.log('Login successful:', response.data);
       alert('Login Successful!'); 
 
-      // In the next step, we'll redirect the user to the dashboard here.
-
-    } catch (err: any) {
+    } catch (err) { // REMOVED ': any' from here
       // Handle errors from the API
+      // We now safely check if the error is from Axios
       if (axios.isAxiosError(err) && err.response) {
         setError(err.response.data.detail || 'An unknown error occurred.');
       } else {
-        setError('Login failed. Please try again later.');
+        // Handle non-Axios errors (e.g., network issues)
+        setError('Login failed. An unexpected error occurred.');
       }
       console.error('Login failed:', err);
     } finally {
-      setLoading(false); // Stop the loading indicator
+      setLoading(false);
     }
   };
 
-  // The JSX for the form remains the same as before
+  // The JSX for the form remains the same
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-900 text-white">
       <div className="w-full max-w-md rounded-lg bg-gray-800 p-8 shadow-lg">
@@ -61,6 +58,7 @@ export default function Home() {
         <p className="mb-6 text-center text-gray-400">Admin & Manager Portal</p>
         
         <form onSubmit={handleLogin} className="space-y-6">
+          {/* Form inputs remain the same... */}
           <div>
             <label htmlFor="organization" className="mb-2 block text-sm font-medium text-gray-300">
               Organization Name
