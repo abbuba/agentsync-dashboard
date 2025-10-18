@@ -5,10 +5,14 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Define the specific types for User and Role
+type UserRole = 'Admin' | 'Manager' | 'Contributor';
+type NewUserRole = 'Manager' | 'Contributor';
+
 interface User {
   id: number;
   email: string;
-  role: 'Admin' | 'Manager' | 'Contributor';
+  role: UserRole;
 }
 
 interface TeamManagerProps {
@@ -18,7 +22,7 @@ interface TeamManagerProps {
 export default function TeamManager({ organizationId }: TeamManagerProps) {
   const [users, setUsers] = useState<User[]>([]);
   const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserRole, setNewUserRole] = useState<'Manager' | 'Contributor'>('Contributor');
+  const [newUserRole, setNewUserRole] = useState<NewUserRole>('Contributor');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -80,7 +84,8 @@ export default function TeamManager({ organizationId }: TeamManagerProps) {
           />
           <select
             value={newUserRole}
-            onChange={(e) => setNewUserRole(e.target.value as any)}
+            // THE FIX IS HERE: We now specify the correct type
+            onChange={(e) => setNewUserRole(e.target.value as NewUserRole)}
             className="rounded-md bg-gray-700 p-3 text-white focus:border-blue-500 focus:ring-blue-500"
           >
             <option>Contributor</option>
