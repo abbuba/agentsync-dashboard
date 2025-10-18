@@ -5,8 +5,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import CategoryManager from '@/components/CategoryManager'; // Import the new component
 
-// THE FIRST FIX: Define a specific type for our user session
 type UserSession = {
   status: string;
   user_id: number;
@@ -16,7 +16,6 @@ type UserSession = {
 
 export default function DashboardPage() {
   const router = useRouter();
-  // Use our new UserSession type instead of 'any'
   const [user, setUser] = useState<UserSession | null>(null);
 
   useEffect(() => {
@@ -55,14 +54,8 @@ export default function DashboardPage() {
       </header>
 
       <main className="container mx-auto p-8">
-        <h2 className="mb-6 text-3xl">Workspace Customization</h2>
-        <div className="rounded-lg border border-dashed border-gray-700 bg-gray-800 p-12 text-center">
-          {/* THE SECOND FIX: Replace the apostrophe in "you'll" */}
-          <p className="text-gray-500">
-            This is where you&apos;ll manage your categories, topics, and suggestions.
-          </p>
-          <p className="mt-2 text-gray-400">Organization ID: {user.organization_id}</p>
-        </div>
+        {/* Replace placeholder with our new component */}
+        <CategoryManager organizationId={user.organization_id} />
       </main>
     </div>
   );
