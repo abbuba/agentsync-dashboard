@@ -7,18 +7,19 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import CategoryManager from '@/components/CategoryManager';
 import SuggestionManager from '@/components/SuggestionManager';
-import TeamManager from '@/components/TeamManager'; // 1. Import the new component
+import TeamManager from '@/components/TeamManager';
+import AnalyticsDashboard from '@/components/AnalyticsDashboard'; // 1. Import the new component
 
 type UserSession = {
   status: string; user_id: number; organization_id: number; role: string;
 };
 
-type Tab = 'workspace' | 'team'; // Define tab types
+type Tab = 'workspace' | 'team' | 'analytics'; // 2. Add 'analytics' tab type
 
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserSession | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('workspace'); // 2. Add state for active tab
+  const [activeTab, setActiveTab] = useState<Tab>('workspace'); 
 
   useEffect(() => {
     const session = Cookies.get('userSession');
@@ -35,7 +36,6 @@ export default function DashboardPage() {
     return <div className="flex min-h-screen items-center justify-center bg-gray-900 text-white">Loading...</div>;
   }
 
-  // Only render Team Management tab if user is an Admin
   const canManageTeam = user.role === 'Admin';
 
   return (
@@ -51,19 +51,22 @@ export default function DashboardPage() {
       </header>
 
       <main className="container mx-auto p-8">
-        {/* 3. Add Tab Navigation */}
+        {/* 3. Add Analytics tab to navigation */}
         <div className="mb-8 flex border-b border-gray-700">
           <button onClick={() => setActiveTab('workspace')} className={`px-6 py-3 text-lg font-medium ${activeTab === 'workspace' ? 'border-b-2 border-blue-500 text-white' : 'text-gray-400'}`}>
             Workspace
           </button>
           {canManageTeam && (
             <button onClick={() => setActiveTab('team')} className={`px-6 py-3 text-lg font-medium ${activeTab === 'team' ? 'border-b-2 border-blue-500 text-white' : 'text-gray-400'}`}>
-              Team Management
+              Team
             </button>
           )}
+          <button onClick={() => setActiveTab('analytics')} className={`px-6 py-3 text-lg font-medium ${activeTab === 'analytics' ? 'border-b-2 border-blue-500 text-white' : 'text-gray-400'}`}>
+            Analytics
+          </button>
         </div>
 
-        {/* 4. Conditionally render content based on active tab */}
+        {/* 4. Conditionally render the new AnalyticsDashboard component */}
         {activeTab === 'workspace' && (
           <div>
             <h2 className="mb-6 text-3xl">Workspace Customization</h2>
@@ -76,6 +79,13 @@ export default function DashboardPage() {
           <div>
             <h2 className="mb-6 text-3xl">Team Management</h2>
             <TeamManager organizationId={user.organization_id} />
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div>
+            <h2 className="mb-6 text-3xl">Advanced Analytics</h2>
+            <AnalyticsDashboard organizationId={user.organization_id} />
           </div>
         )}
       </main>
